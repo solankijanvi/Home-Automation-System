@@ -1,0 +1,43 @@
+#define BLYNK_TEMPLATE_ID "TMPL3E4YWw1wA"
+#define BLYNK_TEMPLATE_NAME "ESP32 Home Automation"
+#define BLYNK_AUTH_TOKEN "L9imFCJgDg7yvLxjnFYUukl9sTyKzrA6"
+#define BLYNK_PRINT Serial
+
+#include <WiFi.h>
+#include <WiFiClient.h>
+#include <BlynkSimpleEsp32.h>
+
+char auth[] = BLYNK_AUTH_TOKEN;
+char ssid[] = "Redmi Note 12 Pro 5G";
+char pass[] = "88888888";
+
+#define relay1_pin 13
+int relay1_state = LOW; // Initialize to LOW (off) by default
+#define button1_vpin V1
+
+BLYNK_CONNECTED() {
+  Blynk.syncVirtual(button1_vpin);
+}
+
+BLYNK_WRITE(button1_vpin) {
+  relay1_state = param.asInt();
+  digitalWrite(relay1_pin, relay1_state);
+  Serial.print("Relay1 State = ");
+  Serial.println(relay1_state);
+}
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(relay1_pin, OUTPUT);  // Ensure relay1_pin is configured as OUTPUT
+
+  digitalWrite(relay1_pin, relay1_state); // Set the initial state
+
+  Blynk.begin(auth, ssid, pass);
+}
+
+void loop() {
+  Blynk.run();
+  // You can inject your own code or combine it with other sketches.
+  // Check other examples on how to communicate with Blynk. Remember
+  // to avoid delay() function!
+}
